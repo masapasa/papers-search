@@ -1,5 +1,5 @@
 from jina import Flow
-
+from docarray import Document
 from executors import SpecterExecutor
 from backend_config import top_k, search_port
 
@@ -10,7 +10,7 @@ indexer = "jinahub://SimpleIndexer"
 def index_flow():
     flow = (
         Flow(protocol="grpc")
-        .add(uses=SpecterExecutor)
+        # .add(uses=SpecterExecutor)
         .add(
             uses=indexer,
         )
@@ -35,3 +35,6 @@ def search_flow():
     )
 
     return flow
+# f = index_flow()
+# with f:
+#     f.index(Document(text="hello"))

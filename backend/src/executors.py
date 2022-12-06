@@ -2,7 +2,7 @@ import re
 import os
 
 from typing import Sequence, List, Tuple
-from sentence_transformers import SentenceTransformer, InputExample, losses
+from sentence_transformers import SentenceTransformer #InputExample, losses
 from torch.utils.data import DataLoader
 from jina import Executor, requests, Document, DocumentArray
 
@@ -64,34 +64,34 @@ class SpecterExecutor(Executor):
         log("Embeddings computation completed.")
         return docs
 
-    @requests(on="/finetune")
-    def finetune(self, docs: DocumentArray, **kwargs) -> DocumentArray:
+    # @requests(on="/finetune")
+    # def finetune(self, docs: DocumentArray, **kwargs) -> DocumentArray:
 
-        log("Finetuning...")
+    #     log("Finetuning...")
 
-        train_data = []
+    #     train_data = []
 
-        for doc in docs:
-            matches = doc.matches
-            for match in doc.matches:
-                train_data.append(
-                    InputExample(
-                        texts=[doc.text, match.text],
-                        label=match.tags["finetuner"]["label"],
-                    )
-                )
+    #     for doc in docs:
+    #         matches = doc.matches
+    #         for match in doc.matches:
+    #             train_data.append(
+    #                 InputExample(
+    #                     texts=[doc.text, match.text],
+    #                     label=match.tags["finetuner"]["label"],
+    #                 )
+    #             )
 
-        train_dataloader = DataLoader(train_data, shuffle=True, batch_size=len(docs))
-        train_loss = losses.CosineSimilarityLoss(self.model)
+    #     train_dataloader = DataLoader(train_data, shuffle=True, batch_size=len(docs))
+    #     train_loss = losses.CosineSimilarityLoss(self.model)
 
-        # Tune the model
-        self.model.fit(
-            train_objectives=[(train_dataloader, train_loss)],
-            epochs=5,
-            warmup_steps=100,
-        )
+    #     # Tune the model
+    #     self.model.fit(
+    #         train_objectives=[(train_dataloader, train_loss)],
+    #         epochs=5,
+    #         warmup_steps=100,
+    #     )
 
-        self.model.save(get_model_dir())
+    #     self.model.save(get_model_dir())
 
-        # Return the new embeddings given by the finetuned model
-        return self.encode(docs)
+    #     # Return the new embeddings given by the finetuned model
+    #     return self.encode(docs)
